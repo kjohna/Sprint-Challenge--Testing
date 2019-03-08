@@ -34,4 +34,14 @@ server.post('/games', async (req, res) => {
   }
 });
 
+server.get('/games', async (req, res) => {
+  try {
+    const games = await db.getAll();
+    console.log("games: ", games);
+    res.status(200).json(games);
+  } catch (error) {
+    res.status(500).json({ message: "error getting games" });
+  }
+});
+
 module.exports = server;

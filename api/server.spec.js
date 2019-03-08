@@ -1,5 +1,10 @@
 const request = require('supertest');
 const server = require('./server.js');
+const Games = require('../games/gamesModel'); // only needed to clean up after tests
+
+afterEach(async () => {
+  await Games.removeAll();
+});
 
 describe('server.js', () => {
   it('should set testing environment', () => {
@@ -18,7 +23,7 @@ describe('server.js', () => {
       expect(res.type).toBe('application/json');
     });
     // test response data shape
-    it('should return { message: "server listening!"', async () => {
+    it('should return { message: "server listening!" }', async () => {
       const res = await request(server).get('/');
       expect(res.body).toEqual({ message: 'server listening!' });
     });
@@ -76,4 +81,56 @@ describe('server.js', () => {
       expect(res.body).toEqual(gameData);
     });
   }); // end POST /games tests
+
+  describe('GET /games', () => {
+    // check response status
+    it('should return status 200', async () => {
+      const res = await request(server).get('/games');
+      expect(res.status).toBe(200);
+    });
+    // test response data type is JSON
+    it('should return JSON', async () => {
+      const res = await request(server).get('/games');
+      expect(res.type).toBe('application/json');
+    });
+    // test response data shape
+    it('should return data in proper format', async () => {
+      const gameData = {
+        title: 'Pacman',
+        genre: 'Arcade',
+        releaseYear: 1980
+      };
+      await request(server)
+        .post('/games')
+        .send(gameData);
+      const res = await request(server).get('/games');
+      expect(res.body).toEqual([gameData]);
+    });
+    // test all games are returned
+    it('should return all games', async () => {
+      const gameData = {
+        title: 'Pacman',
+        genre: 'Arcade',
+        releaseYear: 1980
+      };
+      // add 3 games
+      await request(server)
+        .post('/games')
+        .send(gameData);
+      await request(server)
+        .post('/games')
+        .send({
+          ...gameData,
+          title: 'new title'
+        });
+      await request(server)
+        .post('/games')
+        .send({
+          ...gameData,
+          title: 'new title2'
+        });
+      const res = await request(server).get('/games');
+      expect(res.body.length).toEqual(3);
+    });
+  }); // end GET /games
 });

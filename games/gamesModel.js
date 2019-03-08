@@ -1,18 +1,10 @@
 let games = [
-  {
-    title: 'Pacman', // required
-    genre: 'Arcade', // required
-    releaseYear: 1980 // not required
-  },
-  {
-    title: 'Another', 
-    genre: 'PC', 
-    releaseYear: 1990 
-  }
 ]
 
 module.exports = {
   insert,
+  getAll,
+  removeAll,
 }
 
 async function insert(game) {
@@ -21,5 +13,22 @@ async function insert(game) {
     return games[games.length - 1];
   } catch (error) {
     throw new Error("insert game error");
+  }
+}
+
+async function getAll() {
+  try {
+    return games;
+  } catch (error) {
+    throw new Error("getAll games error");
+  }
+}
+
+async function removeAll() {
+  try {
+    games = [];
+    return games;
+  } catch (error) {
+    
   }
 }
