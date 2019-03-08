@@ -2,6 +2,7 @@ require('dotenv').config();
 
 const express = require('express');
 const server = express();
+const db = require('../games/gamesModel');
 
 server.use(express.json());
 
@@ -14,14 +15,23 @@ server.get('/', async (req, res) => {
 });
 
 server.post('/games', async (req, res) => {
+  // console.log("here!");
   gameData = req.body;
-  try {
-    if (gameData) {
-      res.status(201).json("ok for now");
+  // console.log("gameData: ", gameData)
+  if (Object.keys(gameData).length) {
+    if (gameData.title && gameData.genre) {
+      try {
+        const inserted = await db.insert(gameData);
+        res.status(201).json(inserted);
+      } catch (error) {
+        res.status(500).json({ error });
+      }
+    } else {
+      res.status(422).json({ message: "title and genre are required!" });
     }
-  } catch (error) {
-    res.status(500).json({ error });
+  } else {
+    res.status(400).json({ message: "Please provide game data!" });
   }
-})
+});
 
 module.exports = server;
