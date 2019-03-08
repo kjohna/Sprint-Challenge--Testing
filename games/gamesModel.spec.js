@@ -7,7 +7,7 @@ describe('games model', () => {
     releaseYear: 1980 // not required
   };
   const gameData2 = {
-    title: 'Pacman', // required
+    title: 'Pacman2', // required
     genre: 'Arcade', // required
     releaseYear: 1980 // not required
   }
@@ -25,6 +25,17 @@ describe('games model', () => {
       game = await Games.insert(gameData2);
       expect(game.title).toBe(gameData2.title);
     });
+    // game title must be unique
+    it('should throw error when attempting to add duplicate title', async () => {
+      await Games.insert(gameData);
+      expect(async () => {
+        try {
+          await Games.insert(gameData);
+        } catch (error) {
+          throw new Error(error);
+        }
+      }).toThrow();
+    });
   });
 
   describe('get games', () => {
@@ -35,6 +46,6 @@ describe('games model', () => {
       await Games.insert(gameData2);
       const games = await Games.getAll();
       expect(games.length).toBe(2);
-    })
+    });
   });
 });
