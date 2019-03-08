@@ -24,7 +24,7 @@ server.post('/games', async (req, res) => {
         const inserted = await db.insert(gameData);
         res.status(201).json(inserted);
       } catch (error) {
-        res.status(500).json({ error });
+        res.status(500).json({ error: error.message });
       }
     } else {
       res.status(422).json({ message: "title and genre are required!" });
@@ -37,7 +37,7 @@ server.post('/games', async (req, res) => {
 server.get('/games', async (req, res) => {
   try {
     const games = await db.getAll();
-    console.log("games: ", games);
+    // console.log("games: ", games);
     res.status(200).json(games);
   } catch (error) {
     res.status(500).json({ message: "error getting games" });

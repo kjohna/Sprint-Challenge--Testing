@@ -28,13 +28,24 @@ describe('games model', () => {
     // game title must be unique
     it('should throw error when attempting to add duplicate title', async () => {
       await Games.insert(gameData);
-      expect(async () => {
-        try {
-          await Games.insert(gameData);
-        } catch (error) {
-          throw new Error(error);
-        }
-      }).toThrow();
+      console.log("getAll: ", await Games.getAll());
+      // UGH weird syntax required:
+      expect(Games.insert(gameData)).rejects.toEqual(new Error("Duplicate titles not allowed."));
+      // see link:
+      // https://github.com/facebook/jest/issues/1700
+      // syntax below does not work..
+      // console.log(await Games.insert(gameData));
+      // expect(() => {
+      //   Games.insert(gameData);
+      // }).toThrow();
+      // expect(async () => {
+      //   try {
+      //     await Games.insert(gameData);
+      //   } catch (error) {
+      //     console.log("ERROR: ", error.message)
+      //     throw new Error(error);
+      //   }
+      // }).toThrow();
     });
   });
 
