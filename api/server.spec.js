@@ -22,5 +22,20 @@ describe('server.js', () => {
       const res = await request(server).get('/');
       expect(res.body).toEqual({ message: 'server listening!' });
     });
+  }); // end GET / tests
+
+  describe('POST /games', () => {
+    // check that server responds with 201 for successful POST
+    it('should return status 201 for good post', async () => {
+      const gameData = {
+        title: 'Pacman', // required
+        genre: 'Arcade', // required
+        releaseYear: 1980 // not required
+      };
+      const res = await request(server)
+        .post('/games')
+        .send(gameData);
+      expect(res.status).toBe(201);
+    })
   });
 });

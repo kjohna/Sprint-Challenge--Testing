@@ -13,4 +13,15 @@ server.get('/', async (req, res) => {
   }
 });
 
+server.post('/games', async (req, res) => {
+  gameData = req.body;
+  try {
+    if (gameData) {
+      res.status(201).json("ok for now");
+    }
+  } catch (error) {
+    res.status(500).json({ error });
+  }
+})
+
 module.exports = server;
